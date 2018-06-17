@@ -339,7 +339,71 @@ show ip ospf neighbor
 show ip ospf interface <interface>
 ```
 
+
 ### Switching
+
+#### Switch Security
+
+##### DHCP Spoofing
+
+```
+ena
+conf t
+ip dhcp snooping ! DHCP Snooping am Switch aktivieren
+ip dhcp snooping vlan <vlan-id> ! DHCP Snooping per VLAN aktivieren
+
+interface <interface>
+ip dhcp snooping trust ! Interface als trusted einstellen (von dort werden DHCP Offers erlaubt)
+```
+
+
+##### DHCP Starvation
+
+```
+ena
+conf t
+ip dhcp snooping limit rate <rate> ! (am DHCP Server) Nur bestimmte Anzahl an DHCP Anfragen in einer gewissen Zeit erlauben
+```
+
+
+##### CDP
+
+```
+ena
+conf t
+no cdp run ! CDP am ganzen Switch deaktivieren
+int <interface>
+  no cdp enable ! CDP an einem Interface deaktivieren
+```
+
+
+##### DTP
+
+```
+ena
+conf t
+int <interface>
+  switchport nonegotiate ! Am Trunk port DTP ausschalten (Trunk wird nicht mehr automatisch aktiviert)
+```
+
+
+##### Port Security
+
+```
+ena
+conf t
+int <interface>
+  switchport mode access
+  switchport port-security ! Port-Security auf diesem Interface erlauben
+  switchport port-security maximum <number> ! Maximale Anzahl an erlaubten MAC Adressen einstellen
+  switchport port-security violation <Shutdown|Restrict|Protect> ! Was passieren soll wenn Regeln verstoßen wurden
+  switchport port-security mac-address <address> ! MAC Adresse statisch festlegen/erlauben
+  switchport port-security mac-address sticky ! Automatisch gelernte MAC-Adressen werden in Running-Config gespeichert
+  switchport port-security mac-address sticky <mac-address> ! Angegebene MAC-Adresse lernen und in Running-Config speichern
+  exit
+copy running-config startup-config ! nachdem MAC Adressen sticky gelernt wurden in NVRAM speichern: nach restart noch verfügbar
+```
+
 
 ### VLANs & Trunking
 
