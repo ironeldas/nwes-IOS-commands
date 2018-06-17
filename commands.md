@@ -1,6 +1,7 @@
 Cisco-IOS Befehle & Szenarien für die NWES-Matura
 =================================================
 
+
 Allgemeines
 -----------
 
@@ -8,6 +9,13 @@ Allgemeines
 - Auto-Vervollständigung mit `TAB`
 - Befehle können mit Keyword `no` am Anfang zurückgenommen/negiert werden
 - Kommentare können in einer Zeile nach einem `!` (Rufezeichen) geschrieben werden
+- Mit den folgenden Schlagwörtern nach einem pipe-character | ([Alt-Gr] + [</>]), kann der Output anhand von Bedingungen modifiziert werden
+	- `section` - Shows entire section that starts with the filtering expression
+	- `include` - Includes all output lines that match the filtering expression
+	- `exclude` - Excludes all output lines that match the filtering expression
+	- `begin` - Shows all the output lines from a certain point, starting with the line that matches the filtering expression
+! ZB show ip int brief | include up   oder   show ip route | begin gateway
+
 
 Keyboard-Shortcuts
 ------------------
@@ -66,19 +74,27 @@ show history
 show version
 show flash
 show interfaces (sh int)
-show processes
-show cdp neighbors
-show arp
-show ip arp ! Mappings welche IP welche MAC hat
-sh ip route ! Routing table
-sh ip int brief
-show ipv6 route ! Routing table
-show mac-address-table
-show vlan
 show running-config
 show startup-config
+
+show arp
+show ip arp ! Mappings welche IP welche MAC hat
+show ip route
+show ip route <route> ! ZB show ip route 10.0.0.0 ! zeigt erweiterte Informationen zur jeweiligen Route an
+show ip int brief
+show ip protocols
+show ipv6 route
+show ipv6 route static ! zeigt nur **statische** ipv6 routen an
+show mac-address-table
+show vlan
+
+show history
+show processes
+show cdp neighbors
 show protocols
 show file systems
+show hosts
+show controllers
 dir
 debug
 clock set 19:25:00
@@ -129,6 +145,14 @@ conf t
 hostname <hostname> !ZB hostname R1
 banner motd $ <motd> $ !ZB banner motd $  !!! NO HACKKKERS ALLOWED !!! $ ! $-Zeichen können auch durch andere, zb # ersetzt werden
 enable secret <password> ! ZB enable secret class
+line console 0
+password cisco
+login
+exit
+line vty 0 4
+password cisco
+login
+exit
 service password-encryption
 exit
 copy running-config startup-config
@@ -141,7 +165,7 @@ copy running-config startup-config
 ena
 conf t
 int g0/0.20
-clock rate <rate> ! ZB clock rate 64000 ! nur bei serieller Verbindung und dort auf DCE Seite (mit/ohne Uhr????) !TODO
+clockrate <rate> ! ZB clockrate 64000 ! nur bei serieller Verbindung und dort auf DCE Seite (mit/ohne Uhr????) !TODO clock rate oder "clock rate"
 ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.1 255.255.255.0
 ipv6 add <ipv6-address>/<prefix-length> ! ZB ipv6 add 2001::1/48 ! statische IP Zuweisung
 ipv6 address <ipv6-prefix>/<prefix-length> eui-64 ! ZB ipv6 address 2001::/64 eui-64
@@ -155,6 +179,7 @@ show interface g0/0.20
 show ipv6 interface g0/0.20
 ```
 
+
 ### Switch-SVI vergeben
 
 ```
@@ -162,6 +187,7 @@ int vlan 1
 ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
 no shut
 ```
+
 
 ### SSH-Zugang vergeben
 
@@ -180,6 +206,7 @@ transport input ssh
 exit
 ```
 
+
 ### Lokalen HTTPS-Server am Router/Switch
 
 ```
@@ -196,7 +223,76 @@ transport input telnet ssh
 exit
 ```
 
-### Dynamisches Routen mit OSPF
+
+### statisches Routing
+
+```
+! default static route
+ip route 0.0.0.0 0.0.0.0 {outgoing interface | next-hop address} ! ZB ip route 0.0.0.0 0.0.0.0 s0/0/0
+ipv6 route ::/0 {outgoing interface | next-hop address}
+
+! normal static route
+ip route <network-address> <subnet-mask> {address of next hop | outgoing interface} [administrative distance][permanent] ! ZB ip route 172.16.3.0 255.255.255.0 S0/0/0
+ipv6 route <network-address>/<prefix-length> {ipv6 address | outgoing interface} ! ZB ipv6 route 2001:DB8:ACAB:1::/64 2001:DB8:ACAB:4::2 ! bei Verwendung von link-local Adressen zwingend fully specified static routes, da link-local Adressen nicht in routing table eingetragen werden! (siehe unterhalb)
+
+! fully specified static route
+ip route <network-address> <subnet-mask> <outgoing interface> <address of next hop>
+ipv6 route <network-address>/<prefix length> <outgoing interface> <address of next hop>
+
+! summary static route wie normale static route
+
+! floating static route
+ip route <network-address> <subnet-mask> {address of next hop | outgoing interface} <administrative distance> ! ZB ip route 172.16.3.0 255.255.255.0 S0/0/0 120 ! 120 ist die AD, lower values wins -> Wertebereich [0;255]
+```
+
+### dynamisches Routing
+
+```
+ena
+conf t
+router ? ! gibt mögliche routing protokolle auf CLI aus
+```
+
+#### RIP
+
+```
+ena
+conf t
+router rip
+
+! v1:
+network <network> ! ZB network 192.168.1.0 oder network 192.168.2.0
+
+! v2:
+version 2
+no auto-summary
+
+! allgemein wieder:
+passive-interface <interface> ! ZB passive-interface g0/0
+default-information originate ! für weitergabe der default-route
+end
+sh ip protocols
+debug ip rip
+```
+
+#### RIPng (IPv6)
+
+```
+ena
+conf t
+ipv6 unicast-routing
+
+! auf alle zu routenden interfaces
+int <interface>
+ipv6 rip <bezeichnung> enable ! ZB ipv6 rip RIP-AS enable
+exit
+
+sh ipv6 protocols
+sh ipv6 route
+debug ip rip
+```
+
+#### OSPF
 
 ```
 ena
@@ -229,6 +325,22 @@ show ipv6 route
 show ip ospf neighbor
 show ip ospf interface <interface>
 ```
+
+### Switching
+
+### VLANs & Trunking
+
+### DHCP
+
+### NAT/PAT
+
+### OSPF
+
+### STP
+
+
+Eher für praktische Anwendung
+-----------------------------
 
 ### running-config auf USB sichern &  wiederherstellen
 
