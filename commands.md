@@ -503,7 +503,28 @@ omitted weil i des spritz, ha. ha. ha.
 ### NAT/PAT
 
 ### STP
+```
+ena 
+conf t
+spanning-tree costs <value> ! Port Kosten festlegen (um schnellsten Link zu finden)
+spanning-tree port-priority <value> ! (0-255, default 128) Port mit der niedrigsten Nummer wird zum Designated Port
+	
+spanning-tree portfast ! Zusatzfeature PortFast aktivieren
+spanning-tree uplinkfast ! Zusatzfeature UplinkFast aktivieren
+spanning-tree backbonefast ! Zusatzfeature BackboneFast aktivieren
+spanning-tree bpduguard enable ! Zusatzfeature BPDUGuard aktivieren
+spanning-tree bpdufilter enable ! Zusatzfeature BPDUFilter aktivieren
+spanning-tree guard root ! Zusatzfeature RootGuard aktivieren
+exit
 
+spanning-tree vlan <vlan-id> priority <value> ! Priority für Root-Bridge-Ermittlung pro VLAN
+spanning-tree vlan <vlan-id> root primary ! Switch wird zur Root-Bridge in diesem VLAN
+	
+show spanning-tree
+show spanning-tree detail
+show spanning-tree vlan
+show spanning-tree summary
+```
 
 Eher für praktische Anwendung
 -----------------------------
