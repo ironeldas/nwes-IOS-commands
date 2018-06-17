@@ -10,7 +10,7 @@ Keyboard-Shortcuts
 ------------------
 
 - Pfeiltasten: wie bei jeder CLI
-- [Ctrl] + [A]: Spring zu Zeilenanfang
+- `[Ctrl]` + `[A]`: Spring zu Zeilenanfang
 - [Ctrl] + [E]: Spring ans Ende der Zeile
 - [Enter]: Zeile ausführen
 - [Ctrl] + [Shift] + [6]: gerade ausführenden Befehl abbrechen ! meist ping, DNS query oder traceroute
@@ -23,6 +23,7 @@ Keyboard-Shortcuts
 aus Windoof
 -----------
 
+```
 ipconfig
 ipconfig /all
 ipconfig /reload
@@ -35,6 +36,7 @@ netstat -a ! zeigt lokal offene Ports an
 netstat -b ! zeigt entsprechende Anwendungen zu jeweiligen Ports an
 netstat -p <protocol> ! filtert nach gewähltem L3-Protokoll (tcp/udp)
 nslookup
+```
 
 
 aus user exec mode >
