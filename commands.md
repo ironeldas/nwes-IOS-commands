@@ -14,7 +14,7 @@ Allgemeines
 	- `include` - Includes all output lines that match the filtering expression
 	- `exclude` - Excludes all output lines that match the filtering expression
 	- `begin` - Shows all the output lines from a certain point, starting with the line that matches the filtering expression
-! ZB show ip int brief | include up   oder   show ip route | begin gateway
+	- z. B. ´show ip int brief | include up` oder `show ip route | begin gateway`
 
 
 Keyboard-Shortcuts
@@ -490,6 +490,12 @@ int <interface>
 copy running-config startup-config ! nachdem MAC Adressen sticky gelernt wurden in NVRAM speichern: nach restart noch verfügbar
 ```
 
+---
+
+### ACLs
+
+omitted weil i des spritz, ha. ha. ha.
+---
 
 ### DHCP
 
