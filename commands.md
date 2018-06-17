@@ -77,16 +77,20 @@ show interfaces (sh int)
 show running-config
 show startup-config
 
-show arp
-show ip arp ! Mappings welche IP welche MAC hat
 show ip route
 show ip route <route> ! ZB show ip route 10.0.0.0 ! zeigt erweiterte Informationen zur jeweiligen Route an
 show ip int brief
 show ip protocols
 show ipv6 route
 show ipv6 route static ! zeigt nur **statische** ipv6 routen an
-show mac-address-table
+
+show arp
+show ip arp ! Mappings welche IP welche MAC hat
+show mac address-table
 show vlan
+show vlan brief
+sh int <int> switchport
+sh vlan summary
 
 show history
 show processes
@@ -130,6 +134,15 @@ login
 exit
 ```
 
+
+aus interface configuration mode (config-line)
+----------------------------------------------
+
+```
+duplex {half | full}
+speed 100
+exit
+```
 
 Szenarien
 ---------
@@ -182,26 +195,6 @@ show ipv6 interface g0/0.20
 ```
 
 
-### Switch-SVI vergeben
-
-```
-int vlan 1
-ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
-no shut
-```
-
-### Switch-Management-SVI vergeben
-
-```
-int vlan <vlanid> ! ZB int vlan 99
-ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
-ip default-gateway <ip-address>
-int <physisches interface>
-switchport access vlan 
-no shut
-```
-
-
 ### SSH-Zugang vergeben
 
 ```
@@ -235,9 +228,9 @@ login local
 transport input telnet ssh
 exit
 ```
+### Routing
 
-
-### statisches Routing
+#### statisches Routing
 
 ```
 ! default static route
@@ -258,7 +251,7 @@ ipv6 route <network-address>/<prefix length> <outgoing interface> <address of ne
 ip route <network-address> <subnet-mask> {address of next hop | outgoing interface} <administrative distance> ! ZB ip route 172.16.3.0 255.255.255.0 S0/0/0 120 ! 120 ist die AD, lower values wins -> Wertebereich [0;255]
 ```
 
-### dynamisches Routing
+#### dynamisches Routing
 
 ```
 ena
@@ -266,7 +259,7 @@ conf t
 router ? ! gibt mögliche routing protokolle auf CLI aus
 ```
 
-#### RIP
+##### RIP
 
 ```
 ena
@@ -288,7 +281,7 @@ sh ip protocols
 debug ip rip
 ```
 
-#### RIPng (IPv6)
+##### RIPng (IPv6)
 
 ```
 ena
@@ -305,7 +298,7 @@ sh ipv6 route
 debug ip rip
 ```
 
-#### OSPF
+##### OSPF
 
 ```
 ena
@@ -340,7 +333,100 @@ show ip ospf interface <interface>
 ```
 
 
-### Switching
+### Switching, VLANs & Trunking
+
+#### Switch-Management-SVI vergeben
+
+```
+ena
+conf t
+vlan <vlanid>
+name <name>
+int vlan <vlanid> ! ZB int vlan 99
+ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
+no shut
+int <interface>
+switchport mode access
+switchport access vlan <vlanid>
+no shut
+exit
+ip default-gateway <ip-address>
+exit
+sh vlan brief
+sh ip int brief
+```
+
+
+#### Switch VLAN konfigurieren
+
+```
+ena
+conf t
+vlan <vlanid>
+name <name>
+apply
+int <interface>
+switchport mode access
+switchport access vlan <vlanid>
+sh vlan brief
+sh ip int brief
+```
+
+
+#### Trunk am Switch
+
+```
+ena
+conf t
+vlan <vlanid>
+name <name>
+apply
+switchport mode trunk
+switchport trunk encapsulation dot1q
+switchport trunk native vlan 100
+switchport trunk allowed vlan add 10,20,30,99,100
+sh vlan brief
+sh int <interface> switchport
+```
+
+
+#### Inter-VLAN Routing
+
+##### Router-on-a-stick mit anliegender Trunkleitung
+
+```
+ena
+conf t
+int g0/0.10
+encapsulation dot1q 10
+ip add 10.0.10.254 255.255.255.0
+int g0/0.30
+encapsulation dot1q 30
+ip add 10.0.30.254 255.255.255.0
+int g0/0 ! nur physischen Port hochfahren, subinterfaces müssen nicht selbst hochgefahren werden
+switchport mode trunk
+no shut
+end
+```
+
+
+##### SVI-L3-Switch-based
+
+```
+ena
+conf t
+int g0/0
+ip routing
+exit
+int vlan 10
+no shut
+ip add 10.0.10.253 255.255.255.0
+int vlan 30
+no shut
+ip add 10.0.30.253 255.255.255.0
+exit
+```
+
 
 #### Switch Security
 
@@ -405,13 +491,9 @@ copy running-config startup-config ! nachdem MAC Adressen sticky gelernt wurden 
 ```
 
 
-### VLANs & Trunking
-
 ### DHCP
 
 ### NAT/PAT
-
-### OSPF
 
 ### STP
 
