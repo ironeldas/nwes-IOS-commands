@@ -196,6 +196,39 @@ transport input telnet ssh
 exit
 ```
 
+### Dynamisches Routen mit OSPF
+
+```
+ena
+conf t
+router ospf <process-nr> ! OSPF Konfiguration starten (Prozessnummer nicht wichtig)
+log-adjacency-changes ! Nachbarschaftsänderungen mitloggen
+router-id <ip-address> ! (Optional) Router-ID manuell einstellen
+network <net-ip-address> <wildcard-mask> area <area-nr> ! Netzwerk lernen (Area ist bei Single-Area OSPF die BackboneArea (= 0))
+network <outgoing-interface-ip-address> 0.0.0.0 area <area-nr> ! Netzwerk lernen mit Angabe von outgoing Interface
+
+passive-interface default ! Alle Interfaces als Passiv einstellen
+no passive-interface <interface> ! Nur bestimmte Interfaces nicht-passiv einstellen
+
+default-information originate ! Static-Default-Route in OSPF übertragen
+redistribute connected ! Verbundene Routen in OSPF weiterleiten
+redistribute static ! Statische Routen in OSPF weiterleiten
+exit
+
+interface <interface>
+ipv6 ospf <process-nr> area <area-nr> ! (Für IPv6) OSPF an diesem Interface aktivieren
+ip ospf priority <priority 0-255> ! (Optional, eher unwichtig) Priorität einstellen für Wahl zum DR/BDR (stärker als Router-ID)
+bandwidth <bandwidth in kbps> ! (Optional) Bandbreite für Cost-Errechnung (Metrik) einstellen
+ip ospf cost <costvalue-kbps> ! (Optional) Cost-Value direkt einstellen
+exit
+
+show ipv6 protocols
+show ipv6 ospf interface brief
+show ipv6 ospf neighbor
+show ipv6 route
+show ip ospf neighbor
+show ip ospf interface <interface>
+```
 
 ### running-config auf USB sichern &  wiederherstellen
 
