@@ -2,7 +2,7 @@ Allgemeines
 -----------
 
 - `?` um context sensitive help aufzurufen
-- Auto-Vervollständigung mit [TAB]
+- Auto-Vervollständigung mit `TAB`
 - Befehle können mit Keyword `no` am Anfang zurückgenommen/negiert werden
 - Kommentare können in einer Zeile nach einem `!` (Rufezeichen) geschrieben werden
 
@@ -10,14 +10,14 @@ Keyboard-Shortcuts
 ------------------
 
 - Pfeiltasten: wie bei jeder CLI
-- `[Ctrl]` + `[A]`: Spring zu Zeilenanfang
-- [Ctrl] + [E]: Spring ans Ende der Zeile
-- [Enter]: Zeile ausführen
-- [Ctrl] + [Shift] + [6]: gerade ausführenden Befehl abbrechen ! meist ping, DNS query oder traceroute
-- [Ctrl] + [P]: gleich wie Pfeiltaste nach oben
-- [Ctrl] + [N]: gleich wie Pfeiltaste nach unten
-- [Ctrl] + [C] in config mode: beendet config mode, wechselt auf priv exec mode
-- [Ctrl] + [Z] in config mode: beendet config mode, wechselt auf priv exec mode
+- `Ctrl` + `A`: Spring zu Zeilenanfang
+- `Ctrl` + `E`: Spring ans Ende der Zeile
+- `Enter`: Zeile ausführen
+- `Ctrl` + `Shift` + `6`: gerade ausführenden Befehl abbrechen ! meist ping, DNS query oder traceroute
+- `Ctrl` + `P`: gleich wie Pfeiltaste nach oben
+- `Ctrl` + `N`: gleich wie Pfeiltaste nach unten
+- `Ctrl` + `C` in config mode: beendet config mode, wechselt auf priv exec mode
+- `Ctrl` + `Z` in config mode: beendet config mode, wechselt auf priv exec mode
 
 
 aus Windoof
