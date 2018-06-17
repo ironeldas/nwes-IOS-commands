@@ -1,0 +1,147 @@
+Allgemeines
+-----------
+
+- `?` um context sensitive help aufzurufen
+- Auto-Vervollständigung mit [TAB]
+- Befehle können mit Keyword `no` am Anfang zurückgenommen/negiert werden
+- Kommentare können in einer Zeile nach einem `!` (Rufezeichen) geschrieben werden
+
+Keyboard-Shortcuts
+------------------
+
+- Pfeiltasten: wie bei jeder CLI
+- [Ctrl] + [A]: Spring zu Zeilenanfang
+- [Ctrl] + [E]: Spring ans Ende der Zeile
+- [Enter]: Zeile ausführen
+- [Ctrl] + [Shift] + [6]: gerade ausführenden Befehl abbrechen ! meist ping, DNS query oder traceroute
+- [Ctrl] + [P]: gleich wie Pfeiltaste nach oben
+- [Ctrl] + [N]: gleich wie Pfeiltaste nach unten
+- [Ctrl] + [C] in config mode: beendet config mode, wechselt auf priv exec mode
+- [Ctrl] + [Z] in config mode: beendet config mode, wechselt auf priv exec mode
+
+
+aus Windoof
+-----------
+
+ipconfig
+ipconfig /all
+ipconfig /reload
+tracert <ip> !TODO auf IPv4 und oder IPv6
+arp –a
+ping
+netstat -an ! -an Parameter?
+route print ! Routing table
+netstat -r ! Routing table
+
+
+aus user exec mode >
+--------------------
+
+```
+enable (ena)
+ping <ip> ! ZB ping 127.0.0.1 !TODO auf IPv4 und oder IPv6
+traceroute <ip> !TODO auf IPv4 und oder IPv6
+end
+```
+
+
+aus priv exec mode #
+--------------------
+
+```
+disable
+exit
+end
+reload
+configure terminal (conf t)
+show history
+show version
+show flash
+show interfaces (sh int)
+show processes
+show cdp neighbours
+show arp
+show ip arp ! Mappings welche IP welche MAC hat
+show ip route ! Routing table
+show mac-address-table
+show vlan
+show running-config
+show startup-config
+debug
+clock set 19:25:00
+```
+
+
+aus global configuration mode (config)
+--------------------------------------
+
+```
+do <command> ! führt Befehle eine Ebene unterhalb (als priv exec mode) aus ZB do copy run start
+hostname <hostname> !ZB hostname R1
+enable secret <password> !ZB enable secret class
+service password-encryption
+banner motd $ <motd> $ !ZB banner motd $  !!! NO HACKKKERS ALLOWED !!! $
+copy running-config startup-config
+copy running-config tftp
+erase startup-config
+copy tftp running-config
+line vty 0 15
+line console 0
+ip route
+```
+
+
+aus line configuration mode (config-line)
+-----------------------------------------
+
+```
+password cisco
+login
+exit
+```
+
+
+Szenarien
+---------
+
+### Hostname, MotD, lokales CLI-Login Passwort setzen, config speichern
+
+```
+ena
+erase startup-config
+reload
+ena
+conf t
+hostname <hostname> !ZB hostname R1
+banner motd $ <motd> $ !ZB banner motd $  !!! NO HACKKKERS ALLOWED !!! $ ! $-Zeichen können auch durch andere, zb # ersetzt werden
+enable secret <password> ! ZB enable secret class
+service password-encryption
+exit
+copy running-config startup-config
+```
+
+
+### Ethernet-Interface mit IPv4, IPv6 konfigurieren
+
+```
+ena
+conf t
+int g0/0.20
+clock rate <rate> ! ZB clock rate 64000 ! nur bei serieller Verbindung und dort auf DCE Seite (mit/ohne Uhr????) !TODO
+ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.1 255.255.255.0
+!TODO ipv6 add
+description <desc> ! ZB description Verbindung zum ISP
+no shut
+exit
+show interfaces
+show interface g0/0.20
+```
+
+### Switch-SVI vergeben
+
+```
+int vlan 1
+ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
+no shut
+```
+
