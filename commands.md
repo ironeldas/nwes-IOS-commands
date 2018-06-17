@@ -139,17 +139,19 @@ Szenarien
 ```
 ena
 erase startup-config
+delete flash:vlan.dat
+clear vtp counters
 reload
 ena
 conf t
 hostname <hostname> !ZB hostname R1
 banner motd $ <motd> $ !ZB banner motd $  !!! NO HACKKKERS ALLOWED !!! $ ! $-Zeichen können auch durch andere, zb # ersetzt werden
+enable password <password> ! ZB enable password cisco 
 enable secret <password> ! ZB enable secret class
-line console 0
+line con 0 ! con kurz für console
 password cisco
 login
-exit
-line vty 0 4
+line vty 0 15 ! 16 parallele vty connections möglich
 password cisco
 login
 exit
@@ -185,6 +187,17 @@ show ipv6 interface g0/0.20
 ```
 int vlan 1
 ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
+no shut
+```
+
+### Switch-Management-SVI vergeben
+
+```
+int vlan <vlanid> ! ZB int vlan 99
+ip add <ip-address> <subnetmask> ! ZB ip add 192.168.0.253 255.255.255.0
+ip default-gateway <ip-address>
+int <physisches interface>
+switchport access vlan 
 no shut
 ```
 
